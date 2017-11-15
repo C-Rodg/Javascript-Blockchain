@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/C-Rodg/Javascript-Blockchain/issues"
   },
-  "homepage": "https://github.com/C-Rodg/Javascript-Blockchain#readme"
+  "homepage": "https://github.com/C-Rodg/Javascript-Blockchain#readme",
+  "devDependencies": {
+    "express": "^4.16.2"
+  }
 }

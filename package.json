@@ -1,0 +1,25 @@
+{
+  "name": "js-blockchain",
+  "version": "1.0.0",
+  "description": "A simple blockchain example created using Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C-Rodg/Javascript-Blockchain.git"
+  },
+  "keywords": [
+    "blockchain",
+    "express",
+    "javascript",
+    "crypto"
+  ],
+  "author": "C-Rodg",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/C-Rodg/Javascript-Blockchain/issues"
+  },
+  "homepage": "https://github.com/C-Rodg/Javascript-Blockchain#readme"
+}

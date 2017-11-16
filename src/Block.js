@@ -68,5 +68,18 @@ const isValidNewBlock = (newBlock, previousBlock) => {
 	return true;
 };
 
+// Replace chain if there are conflicts
+const replaceChain = newBlocks => {
+	if (isValidChain(newBlocks) && newBlocks.length > blockchain.length) {
+		console.log(
+			"Received a valid blockchain. Replacing current with received blockchain."
+		);
+		blockchain = newBlocks;
+		broadcast(responseLatestMsg());
+	} else {
+		console.log("Received an invalid blockchain.");
+	}
+};
+
 // Create first block
 const blockchain = [getGenesisBlock()];

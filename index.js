@@ -169,8 +169,23 @@ const addBlock = newBlock => {
 	}
 };
 
-// Get the latest block
+// Helper methods
 const getLatestBlock = () => blockchain[blockchain.length - 1];
+const queryChainLengthMsg = () => ({ type: MessageType.QUERY_LATEST });
+const queryAllMsg = () => ({ type: MessageType.QUERY_ALL });
+const responseChainMsg = () => ({
+	type: MessageType.RESPONSE_BLOCKCHAIN,
+	data: JSON.stringify(blockchain)
+});
+const responseLatestMsg = () => ({
+	type: MessageType.RESPONSE_BLOCKCHAIN,
+	data: JSON.stringify([getLatestBlock()])
+});
+const write = (ws, message) => ws.send(JSON.stringify(message));
+const broadcast = message => sockets.forEach(socket => write(socket, message));
 
 // Startup
 let blockchain = [BlockApi.getGenesisBlock()];
+connectToPeers(initialPeers);
+initHttpServer();
+initP2PServer();

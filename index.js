@@ -44,6 +44,50 @@ const initHttpServer = () => {
 	);
 };
 
+// Initialize P2P server
+const initP2PServer = () => {
+	const server = new WebSocket.server({ port: p2p_port });
+	server.on("connection", ws => initConnection(ws));
+	console.log(`Listening websocket p2p on port: ${p2p_port}`);
+};
+
+// Initialize a websocket a connection
+const initConnection = ws => {
+	sockets.push(ws);
+	initMessageHandler(ws);
+	initErrorHandler(ws);
+	write(ws, queryChainLengthMsg());
+};
+
+// Handle messages from websocket
+const initMessageHandler = ws => {
+	ws.on("message", data => {
+		const message = JSON.parse(data);
+		console.log(`Received message: ${JSON.stringify(message)}`);
+		switch (message.type) {
+			case MessageType.QUERY_LATEST:
+				write(ws, responseLatestMsg());
+				break;
+			case MessageType.QUERY_ALL:
+				write(ws, responseChainMsg());
+				break;
+			case MessageType.RESPONSE_BLOCKCHAIN:
+				handleBlockchainResponse(message);
+				break;
+		}
+	});
+};
+
+// Handle initialization websocket error
+const initErrorHandler = ws => {
+	const closeConnection = ws => {
+		console.log(`Connection failed to peer: ${ws.url}`);
+		sockets.splice(sockets.indexOf(ws), 1);
+	};
+	ws.on("close", () => closeConnection(ws));
+	ws.on("error", () => closeConnection(ws));
+};
+
 // Replace chain if there are conflicts
 const replaceChain = newBlocks => {
 	if (

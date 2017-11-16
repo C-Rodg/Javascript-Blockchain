@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/C-Rodg/Javascript-Blockchain#readme",
   "devDependencies": {
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.2"
   }
 }

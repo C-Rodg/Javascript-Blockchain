@@ -8,6 +8,16 @@ class Block {
 	}
 }
 
+// Calculate hash for block structure
+const calculateHashForBlock = block => {
+	return calculateHash(
+		block.index,
+		block.previousHash,
+		block.timestamp,
+		block.data
+	);
+};
+
 // Calculate the block hash to keep integrity using SHA-256
 const calculateHash = (index, previousHash, timestamp, data) => {
 	return CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
@@ -39,6 +49,23 @@ const getGenesisBlock = () => {
 	const data = "GENESIS BLOCK";
 	const thisHash = calculateHash(0, "0", timestamp, data);
 	return new Block(0, "0", timestamp, data, thisHash);
+};
+
+// Validate new block
+const isValidNewBlock = (newBlock, previousBlock) => {
+	if (previousBlock.index + 1 !== newBlock.index) {
+		console.log("invalid index");
+		return false;
+	} else if (previousBlock.hash !== newBlock.previousHash) {
+		console.log("invalid previousHash");
+		return false;
+	} else if (calculateHashForBlock(newBlock) !== newBlock.hash) {
+		console.log(
+			`invalid hash: ${calculateHashForBlock(newBlock)} ${newBlock.hash}`
+		);
+		return false;
+	}
+	return true;
 };
 
 // Create first block

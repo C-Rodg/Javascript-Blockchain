@@ -23,29 +23,9 @@ const calculateHash = (index, previousHash, timestamp, data) => {
 	return CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
 };
 
-// Generate the next block object
-const generateNextBlock = blockData => {
-	const previousBlock = getLatestBlock();
-	const nextIndex = previousBlock.index + 1;
-	const nextTimestamp = new Date().getTime() / 1000;
-	const nextHash = calculateHash(
-		nextIndex,
-		previousBlock.hash,
-		nextTimestamp,
-		blockData
-	);
-	return new Block(
-		nextIndex,
-		previousBlock.hash,
-		nextTimestamp,
-		blockData,
-		nextHash
-	);
-};
-
 // Get Genesis block (first block of blockchain)
 const getGenesisBlock = () => {
-	const timestamp = new Date().getTime() / 1000;
+	const timestamp = 1000;
 	const data = "GENESIS BLOCK";
 	const thisHash = calculateHash(0, "0", timestamp, data);
 	return new Block(0, "0", timestamp, data, thisHash);
@@ -68,18 +48,22 @@ const isValidNewBlock = (newBlock, previousBlock) => {
 	return true;
 };
 
-// Replace chain if there are conflicts
-const replaceChain = newBlocks => {
-	if (isValidChain(newBlocks) && newBlocks.length > blockchain.length) {
-		console.log(
-			"Received a valid blockchain. Replacing current with received blockchain."
-		);
-		blockchain = newBlocks;
-		broadcast(responseLatestMsg());
-	} else {
-		console.log("Received an invalid blockchain.");
+// Validate blockchain
+const isValidChain = blockchain => {
+	if (JSON.stringify(blockchain[0]) !== JSON.stringify(getGenesisBlock())) {
+		return false;
 	}
+	const tempBlocks = [blockchain[0]];
+	for (let i = 0, j = blockchain.length; i < j; i++) {
+		if (isValidNewBlock(blockchain[i], tempBlocks[i - 1])) {
+			tempBlocks.push(blockchain[i]);
+		} else {
+			return false;
+		}
+	}
+	return true;
 };
 
-// Create first block
-const blockchain = [getGenesisBlock()];
+module.exports.isValidChain = isValidChain;
+module.exports.isValidNewBlock = isValidChain;
+module.exports.getGenesisBlock = getGenesisBlock;
